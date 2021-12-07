@@ -1,7 +1,7 @@
 # Contributing to SPKG
 ## Reporting Bugs
 ### Before Reporting a Bug
-- Check the [https://github.com/bastisawesome/spkg/issues](issues) page to see
+- Check the [issues](https://github.com/bastisawesome/spkg/issues) page to see
 if a bug has already been reported. If an issue has already been posted, please
 do any of the following:
     - Add a comment if you feel like a report is missing something.
@@ -11,12 +11,12 @@ is more beneficial to keep responses on-topic and concise.
 - Ensure the issue is with the latest released version.
 - Check the latest milestones and projects to see if the issue is already being
 resolved.
-- Check the [https://github.com/bastisawesome/spkg/discussions](discussions) to
+- Check the [discussions](https://github.com/bastisawesome/spkg/discussions) to
 see if anyone has mentioned related issues.
 
 ### Submitting a Good Bug Report
 Bug reports are tracked using GitHub's built-in
-[https://github.com/bastisawesome/spkg/issues](issues) page. If you've already
+[issues](https://github.com/bastisawesome/spkg/issues) page. If you've already
 confirmed the issue [#beforereportingabug](does not exist), create a new issue.
 Issues should include the following:
 - Short and concise title explaining the issue.
@@ -44,8 +44,8 @@ issue reports.
 
 ## Suggesting Enhancements
 ### Before Suggesting an Enhancement
-- Check the [https://github.com/bastisawesome/spkg/issues](issues) and
-[https://github.com/bastisawesome/spkg/discussions](discussions) pages to see
+- Check the [issues](https://github.com/bastisawesome/spkg/issues) and
+[discussions](https://github.com/bastisawesome/spkg/discussions) pages to see
 if anyone else has suggested the enhancement. If it has already been post,
 please do any of the following:
     - Add a response if you have something to add that hasn't been mentioned.
@@ -56,7 +56,7 @@ is more beneficial to keep responses on-topic and concise.
 
 ### Submitting a Good Enhancement
 Enhancements, like buts, are tracked using GitHub's built-in 
-[https://github.com/bastisawesome/spkg/issues](issues) page. When submitting an
+[issues](https://github.com/bastisawesome/spkg/issues) page. When submitting an
 enhancement, please do the following:
 - Include a short and concise title detailing the enhancement.
 - In the body, provide more detailed explanations of the enhancement.
@@ -75,17 +75,24 @@ in some way, be sure to reference them in the descriptions.
 This section describes the labels used to organise and track issues and
 enhancements.
 
-| Label name  | :mag-right: | Description |
+| Label name  | Search | Description |
 | --- | --- | --- |
-| `enhancement` | [search][search-spkg-repo-label-enhancement] | Feature requests. |
+| `enhancement` | [search](https://github.com/bastisawesome/spkg/labels/enhancement) | Feature requests. |
+| `bug` | [search](https://github.com/bastisawesome/spkg/labels/bug) | Possible or confirmed bugs. |
+| `documentation` | [search](https://github.com/bastisawesome/spkg/labels/documentation) | Enhancements to the documentation and help output. |
+| `duplicate` | [search](https://github.com/bastisawesome/spkg/labels/duplicate) | Issues that have already been reported. |
+| `good first issue` | [search](https://github.com/bastisawesome/spkg/labels/good%20first%20issue) | Issues that can either be solved in very little code, or would be good for getting accustomed to the codebase. |
+| `help wanted` | [search](https://github.com/bastisawesome/spkg/labels/help%20wanted) | Issues that are more complex and may require better knowledge and understanding of the underlying code infrastructure. |
+| `invalid` | [search](https://github.com/bastisawesome/spkg/labels/invalid) | Issues that aren't related to SPKG. |
+| `wontfix` | [search](https://github.com/bastisawesome/spkg/labels/wontfix) | Issues that will not be fixed, usually due to working as intended or outside of scope. |
 
 ## Code Contributions
 If you're not sure where to begin with contributing, look for issues labelled as
 "help wanted" or "good first issue".
-- [https://github.com/bastisawesome/spkg/labels/help%20wanted](Help wanted issues) -
+- [Help wanted issues](https://github.com/bastisawesome/spkg/labels/help%20wanted) -
 Usually a little more complex and may require a bit of
 code refactoring or knowledge on underlying requirements (like with Requests).
-- [https://github.com/bastisawesome/spkg/labels/good%20first%20issue](Good first issue) -
+- [Good first issue](https://github.com/bastisawesome/spkg/labels/good%20first%20issue) -
 Usually simpler to implement with very little refactoring or knowledge of
 underlying requirements.
 
@@ -96,11 +103,11 @@ is to ensure the code works correctly and is compatible with other changes being
 made.
 
 Pull requests must use the following guidelines to be considered:
-- Must follow the [#styleguide](styleguide)
+- Must follow the [styleguide](#styleguide)
 - Must include in the body what issue(s) or enhancement(s) it resolves:
     - `closes #[issue number]`
 
-## Styleguides
+## Styleguide
 ### Git Commit Messages
 - Use the present tense ("Fix bug" not "Fixed bug")
 - Use the imperative mood ("Fix bug" not "Fixes bug")
@@ -120,7 +127,7 @@ If contributions are made in another editor, make sure to mention it in the
 description of the pull request, as code will have to be checked against
 PyLance.
 
-SPKG abides by [https://www.python.org/dev/peps/pep-0008/](PEP 8) standards,
+SPKG abides by [PEP 8](https://www.python.org/dev/peps/pep-0008/) standards,
 with the following modifications:
 - Lines must be 80 characters long or less
 - Indentation is 4-spaces
