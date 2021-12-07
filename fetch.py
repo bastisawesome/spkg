@@ -54,7 +54,7 @@ def process_package_list(args: Namespace, appdirs: AppDirs,
 
         full_size += pkg_full['pkgsize']
 
-        if args.dependencies:
+        if args.dependencies and pkg_full.get('deps', None):
             for dep_name in pkg_full['deps']:
                 dep_full = read_package_data(dep_name, config, appdirs)
                 pkg_list.append({

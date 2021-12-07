@@ -137,6 +137,13 @@ The final executable will be stored in `./dist/` and can be run either in
 Powershell (recommended) or CMD. Note that some features may not work properly
 in CMD.
 
+Changelog:
+Version 0.0.2 (bugfix):
+- Fixes bug with `fetch` when packages don't contain dependencies
+
+Version 0.0.1:
+- Initial release
+
 # TODO:
 SPKG is still a work-in-progress and as such many features are missing. This
 list is by no means exhaustive, and some features not documented here are in the

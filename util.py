@@ -19,7 +19,7 @@ def size_fmt(num: float, do_round: bool = False) -> str:
 class Config():
     AUTHOR = 'BastIsAwesome'
     APP_NAME = 'spkg'
-    VERSION = '0.0.1'
+    VERSION = '0.0.2'
     REPO_URL = 'http://pkg.freebsd.org/{ABI}/{RELEASE_TYPE}/All/'
 
     # Supported FreeBSD variables
