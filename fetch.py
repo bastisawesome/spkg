@@ -92,7 +92,6 @@ def resolve_deps(deps_list: list[str], appdirs: AppDirs,
     return pkg_list
 
 
-
 def get_all_packages(appdirs: AppDirs) -> tuple[list[dict[str, Any]], int]:
     pkg_list: list[dict[str, Any]] = []
     full_size: int = 0
@@ -143,7 +142,8 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         with requests.get(repo_url) as r:
             r.raise_for_status()
 
-            with open(pathlib.Path(out_path, pkg['name']+'.pkg'), 'wb') as f:
+            with open(pathlib.Path(out_path, pkg_name_version+'.pkg'),
+                      'wb') as f:
                 for chunk in r.iter_content():
                     dl = len(chunk)
                     if chunk:
