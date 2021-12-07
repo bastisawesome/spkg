@@ -140,6 +140,7 @@ in CMD.
 Changelog:
 Version 0.0.2 (bugfix):
 - Fixes bug with `fetch` when packages don't contain dependencies
+- Fixes bug with how SPKG uses the cache.
 
 Version 0.0.1:
 - Initial release
