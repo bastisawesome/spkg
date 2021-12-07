@@ -52,22 +52,45 @@ def process_package_list(args: Namespace, appdirs: AppDirs,
             'pkgsize': pkg_full['pkgsize']
         })
 
-        full_size += pkg_full['pkgsize']
-
         if args.dependencies and pkg_full.get('deps', None):
-            for dep_name in pkg_full['deps']:
-                dep_full = read_package_data(dep_name, config, appdirs)
-                pkg_list.append({
-                    'name': dep_full['name'],
-                    'version': dep_full['version'],
-                    'pkgsize': dep_full['pkgsize']
-                })
+            deps = pkg_full['deps'].keys()
+            pkgs = resolve_deps(deps, appdirs, config)
+            pkg_list.extend(pkgs)
 
-                full_size += dep_full['pkgsize']
+    # Calculate full size and generate a unique list of packages.
+    included_pkgs: list[str] = []
+    for pkg in pkg_list.copy():
+        if pkg['name'] in included_pkgs:
+            pkg_list.remove(pkg)
+            continue
+
+        included_pkgs.append(pkg['name'])
+        full_size += pkg['pkgsize']
 
     pkg_list = sorted(pkg_list, key=lambda data: data['name'])
 
     return pkg_list, full_size
+
+
+def resolve_deps(deps_list: list[str], appdirs: AppDirs,
+                 config: Config) -> list[dict[str, Any]]:
+    ''' Get the fully resolved list of dependencies (recursive).'''
+    pkg_list: list[dict[str, Any]] = []
+
+    for dep_name in deps_list:
+        pkg = read_package_data(dep_name, config, appdirs)
+        pkg_list.append({
+            'name': pkg['name'],
+            'version': pkg['version'],
+            'pkgsize': pkg['pkgsize']
+        })
+
+        if pkg.get('deps', None):
+            deps = resolve_deps(pkg['deps'].keys(), appdirs, config)
+            pkg_list.extend([d for d in deps if d not in pkg_list])
+
+    return pkg_list
+
 
 
 def get_all_packages(appdirs: AppDirs) -> tuple[list[dict[str, Any]], int]:
