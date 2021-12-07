@@ -92,7 +92,6 @@ def resolve_deps(deps_list: list[str], appdirs: AppDirs,
     return pkg_list
 
 
-
 def get_all_packages(appdirs: AppDirs) -> tuple[list[dict[str, Any]], int]:
     pkg_list: list[dict[str, Any]] = []
     full_size: int = 0
