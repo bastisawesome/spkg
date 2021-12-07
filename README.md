@@ -146,6 +146,7 @@ source code at the top of some files.
 - Configuration support
     - Default repositories
     - Update configuration if the user asks to use a repo for the first time
+    - Support for mirrors
 - OpenBSD and NetBSD support
 - Regular Expressions
 - Skip downloading packages that are already downloaded
