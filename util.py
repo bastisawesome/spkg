@@ -99,12 +99,17 @@ def read_package_data(pkg_name: str, _config: Config,
     data: dict[str, Any] = {}
     with open(pathlib.Path(appdirs.user_cache_dir, 'pkgdb.yaml'), 'r') as f:
         f.seek(_pkg_cache_pos)
-        for line in f.readlines():
+        line = f.readline()
+
+        while line:
             data = json.loads(line)
             _PKG_CACHE[data['name']] = data
+
             if data['name'] == pkg_name:
                 _pkg_cache_pos = f.tell()
                 break
+
+            line = f.readline()
 
     return data
 
