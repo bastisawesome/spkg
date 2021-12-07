@@ -130,6 +130,13 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         # Prepare the package's location to be passed to the URL.
         pkg_name_version = f'{pkg["name"]}-{pkg["version"]}'
         pkg_location: str = f'{pkg_name_version}.pkg'
+        pkg_path = pathlib.Path(out_path, pkg_name_version+'.pkg')
+
+        # Do not download if the file exists.
+        if check_downloaded_package(pkg_path, pkg['pkgsize']):
+            print(f'Skipping downloaded package: {pkg_location}')
+            continue
+
         repo_url = fmt_repo_url.format(pkg_location)
 
         # Prepare download stats
@@ -143,7 +150,7 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         with requests.get(repo_url) as r:
             r.raise_for_status()
 
-            with open(pathlib.Path(out_path, pkg['name']+'.pkg'), 'wb') as f:
+            with open(pathlib.Path(pkg_path), 'wb') as f:
                 for chunk in r.iter_content():
                     dl = len(chunk)
                     if chunk:
@@ -156,6 +163,18 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
                     speed = download_size / elapsed_sec if elapsed_sec else 0
                     print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}B/s', time_out), end='\r')
                 print()  # Newline to prevent overwriting the previous output.
+
+
+def check_downloaded_package(location: pathlib.Path, pkg_size: int, ) -> bool:
+    '''Check if a package has already been downloaded.'''
+    # Check if the file exists.
+    if not location.exists():
+        return False
+
+    # Check that the file has been fully downloaded.
+    fully_downloaded = location.stat().st_size == pkg_size
+
+    return fully_downloaded
 
 
 def pre_download(pkg_list: list[dict[str, Any]], total_size: int) -> bool:
