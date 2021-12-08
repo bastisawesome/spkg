@@ -160,7 +160,7 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
                     percent_downloaded = ceil(download_size / total_size * 100)
                     time_out = f'{elapsed_min:02d}:{elapsed_sec:02d}'
                     speed = download_size / elapsed_sec if elapsed_sec else 0
-                    print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}B/s', time_out), end='\r')
+                    print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}/s', time_out), end='\r')
                 print()  # Newline to prevent overwriting the previous output.
 
 
