@@ -26,10 +26,10 @@ def run(_args: Namespace, config: Config, appdirs: AppDirs):
     # Ensure there is a packagesite.yaml for this ABI
     url = config.get_full_url()
     print('Downloading packagesite.txz...')
-    with requests.get(url.format('packagesite.txz')) as r:
+    with requests.get(url.format('packagesite.txz'), stream=True) as r:
         r.raise_for_status()
         with open(pathlib.Path(tar_path), 'wb') as f:
-            for chunk in r.iter_content():
+            for chunk in r.iter_content(chunk_size=config.CHUNK_SIZE):
                 if chunk:
                     f.write(chunk)
                     # f.flush()

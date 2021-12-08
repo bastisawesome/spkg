@@ -146,11 +146,11 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         print(fmt_str.format(0, size_fmt(0), '0B/s', '00:00'), end='\r')
 
         # Actually download the thing.
-        with requests.get(repo_url) as r:
+        with requests.get(repo_url, stream=True) as r:
             r.raise_for_status()
 
             with open(pathlib.Path(pkg_path), 'wb') as f:
-                for chunk in r.iter_content():
+                for chunk in r.iter_content(chunk_size=config.CHUNK_SIZE):
                     dl = len(chunk)
                     if chunk:
                         f.write(chunk)
@@ -159,7 +159,7 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
                     elapsed_min, elapsed_sec = divmod(elapsed, 60)
                     percent_downloaded = ceil(download_size / total_size * 100)
                     time_out = f'{elapsed_min:02d}:{elapsed_sec:02d}'
-                    speed = download_size / elapsed_sec if elapsed_sec else 0
+                    speed = download_size / elapsed if elapsed_sec else 0
                     print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}B/s', time_out), end='\r')
                 print()  # Newline to prevent overwriting the previous output.
 

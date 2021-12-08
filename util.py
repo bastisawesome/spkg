@@ -29,6 +29,7 @@ class Config():
                              'aarch64', 'riscv64']
     FREEBSD_RELEASE_TYPES = ['latest', 'quarterly', 'release_0', 'release_1',
                              'release_2', 'release_3', 'release_4']
+    CHUNK_SIZE = 512  # Used by Requests iter_lines function as the default size
 
     def __init__(self):
         self._freebsd_version = 13
