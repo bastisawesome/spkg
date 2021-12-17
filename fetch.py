@@ -52,22 +52,44 @@ def process_package_list(args: Namespace, appdirs: AppDirs,
             'pkgsize': pkg_full['pkgsize']
         })
 
-        full_size += pkg_full['pkgsize']
-
         if args.dependencies and pkg_full.get('deps', None):
-            for dep_name in pkg_full['deps']:
-                dep_full = read_package_data(dep_name, config, appdirs)
-                pkg_list.append({
-                    'name': dep_full['name'],
-                    'version': dep_full['version'],
-                    'pkgsize': dep_full['pkgsize']
-                })
+            deps = pkg_full['deps'].keys()
+            pkgs = resolve_deps(deps, appdirs, config)
+            pkg_list.extend(pkgs)
 
-                full_size += dep_full['pkgsize']
+    # Calculate full size and generate a unique list of packages.
+    included_pkgs: list[str] = []
+    for pkg in pkg_list.copy():
+        if pkg['name'] in included_pkgs:
+            pkg_list.remove(pkg)
+            continue
+
+        included_pkgs.append(pkg['name'])
+        full_size += pkg['pkgsize']
 
     pkg_list = sorted(pkg_list, key=lambda data: data['name'])
 
     return pkg_list, full_size
+
+
+def resolve_deps(deps_list: list[str], appdirs: AppDirs,
+                 config: Config) -> list[dict[str, Any]]:
+    ''' Get the fully resolved list of dependencies (recursive).'''
+    pkg_list: list[dict[str, Any]] = []
+
+    for dep_name in deps_list:
+        pkg = read_package_data(dep_name, config, appdirs)
+        pkg_list.append({
+            'name': pkg['name'],
+            'version': pkg['version'],
+            'pkgsize': pkg['pkgsize']
+        })
+
+        if pkg.get('deps', None):
+            deps = resolve_deps(pkg['deps'].keys(), appdirs, config)
+            pkg_list.extend([d for d in deps if d not in pkg_list])
+
+    return pkg_list
 
 
 def get_all_packages(appdirs: AppDirs) -> tuple[list[dict[str, Any]], int]:
@@ -107,6 +129,13 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         # Prepare the package's location to be passed to the URL.
         pkg_name_version = f'{pkg["name"]}-{pkg["version"]}'
         pkg_location: str = f'{pkg_name_version}.pkg'
+        pkg_path = pathlib.Path(out_path, pkg_name_version+'.pkg')
+
+        # Do not download if the file exists.
+        if check_downloaded_package(pkg_path, pkg['pkgsize']):
+            print(f'Skipping downloaded package: {pkg_location}')
+            continue
+
         repo_url = fmt_repo_url.format(pkg_location)
 
         # Prepare download stats
@@ -120,7 +149,7 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         with requests.get(repo_url) as r:
             r.raise_for_status()
 
-            with open(pathlib.Path(out_path, pkg['name']+'.pkg'), 'wb') as f:
+            with open(pathlib.Path(pkg_path), 'wb') as f:
                 for chunk in r.iter_content():
                     dl = len(chunk)
                     if chunk:
@@ -131,8 +160,20 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
                     percent_downloaded = ceil(download_size / total_size * 100)
                     time_out = f'{elapsed_min:02d}:{elapsed_sec:02d}'
                     speed = download_size / elapsed_sec if elapsed_sec else 0
-                    print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}B/s', time_out), end='\r')
+                    print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}/s', time_out), end='\r')
                 print()  # Newline to prevent overwriting the previous output.
+
+
+def check_downloaded_package(location: pathlib.Path, pkg_size: int, ) -> bool:
+    '''Check if a package has already been downloaded.'''
+    # Check if the file exists.
+    if not location.exists():
+        return False
+
+    # Check that the file has been fully downloaded.
+    fully_downloaded = location.stat().st_size == pkg_size
+
+    return fully_downloaded
 
 
 def pre_download(pkg_list: list[dict[str, Any]], total_size: int) -> bool:
