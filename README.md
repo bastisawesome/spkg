@@ -157,6 +157,4 @@ source code at the top of some files.
     - Support for mirrors
 - OpenBSD and NetBSD support
 - Regular Expressions
-- Skip downloading packages that are already downloaded
-    - Applies to specifying a download location or cached downloads
 - Use a proper package database
