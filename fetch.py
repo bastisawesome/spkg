@@ -1,7 +1,6 @@
 '''
 TODO: Clean up this code!
 TODO: Make the linter shut up, please!
-TODO: Fix the output to be more accurate, currently missing spacing between elements.
 '''
 from __future__ import annotations
 from argparse import Namespace
