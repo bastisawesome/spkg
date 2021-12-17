@@ -1,7 +1,3 @@
-'''
-TODO: Clean up this code!
-TODO: Make the linter shut up, please!
-'''
 from __future__ import annotations
 from argparse import Namespace
 from typing import Any
@@ -121,42 +117,35 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         if not out_path.exists():
             out_path.mkdir()
 
-    # Prepare the URL for downloading.
-    fmt_repo_url = config.get_full_url()
-
     for pkg in pkg_list:
         # Prepare the package's location to be passed to the URL.
         pkg_name_version = f'{pkg["name"]}-{pkg["version"]}'
         pkg_location: str = f'{pkg_name_version}.pkg'
-        pkg_path = pathlib.Path(out_path, pkg_name_version+'.pkg')
+        pkg_path = pathlib.Path(out_path, pkg_location)
 
         # Do not download if the file exists.
         if check_downloaded_package(pkg_path, pkg['pkgsize']):
             print(f'Skipping downloaded package: {pkg_location}')
             continue
 
-        repo_url = fmt_repo_url.format(pkg_location)
-
         # Prepare download stats
         download_size = 0
-        total_size = pkg['pkgsize']
         start_time = time.perf_counter()
 
         print_status(pkg_name_version)
 
         # Actually download the thing.
-        with requests.get(repo_url) as r:
+        with requests.get(config.get_full_url().format(pkg_location)) as r:
             r.raise_for_status()
 
-            with open(pathlib.Path(pkg_path), 'wb') as f:
+            with open(pkg_path, 'wb') as f:
                 for chunk in r.iter_content():
-                    dl = len(chunk)
                     if chunk:
                         f.write(chunk)
-                        download_size += dl
+                        download_size += len(chunk)
                     elapsed = round(time.perf_counter() - start_time)
-                    percent_downloaded = ceil(download_size / total_size * 100)
-                    print_status(pkg_name_version, percent_downloaded,
+                    print_status(pkg_name_version,
+                                 ceil(download_size / pkg['pkgsize'] * 100),
                                  download_size, elapsed)
                 print()  # Newline to prevent overwriting the previous output.
 
