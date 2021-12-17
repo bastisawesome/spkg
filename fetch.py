@@ -142,8 +142,8 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
         download_size = 0
         total_size = pkg['pkgsize']
         start_time = time.perf_counter()
-        fmt_str = 'Fetching ' + pkg_name_version+': {}%  {} {} {}'
-        print(fmt_str.format(0, size_fmt(0), '0B/s', '00:00'), end='\r')
+
+        print_status(pkg_name_version)
 
         # Actually download the thing.
         with requests.get(repo_url) as r:
@@ -156,11 +156,9 @@ def download_packages(pkg_list: list[dict[str, Any]], args: Namespace,
                         f.write(chunk)
                         download_size += dl
                     elapsed = round(time.perf_counter() - start_time)
-                    elapsed_min, elapsed_sec = divmod(elapsed, 60)
                     percent_downloaded = ceil(download_size / total_size * 100)
-                    time_out = f'{elapsed_min:02d}:{elapsed_sec:02d}'
-                    speed = download_size / elapsed_sec if elapsed_sec else 0
-                    print(fmt_str.format(percent_downloaded, size_fmt(download_size, do_round=True), f'{size_fmt(speed)}/s', time_out), end='\r')
+                    print_status(pkg_name_version, percent_downloaded,
+                                 download_size, elapsed)
                 print()  # Newline to prevent overwriting the previous output.
 
 
@@ -197,3 +195,18 @@ def pre_download(pkg_list: list[dict[str, Any]], total_size: int) -> bool:
         return False
 
     return True
+
+
+def print_status(pkg_name_ver: str, percent_downloaded: int = 0,
+                 amount_downloaded: int = 0, time_elapsed: float = 0):
+
+    # Calculate download speed.
+    speed = amount_downloaded / time_elapsed if time_elapsed else 0
+
+    # Calculate time elapsed as human-readable.
+    elapsed_min, elapsed_sec = divmod(time_elapsed, 60)
+    time_out = f'{elapsed_min:02d}:{elapsed_sec:02d}'
+
+    print(f'Fetching {pkg_name_ver}: {percent_downloaded:3}%  \
+{size_fmt(amount_downloaded, do_round=True):8} \
+{size_fmt(speed, do_round=False)+"/s":11} {time_out:5}', end='\r')
