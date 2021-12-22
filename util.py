@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any
 import json
 import pathlib
 from appdirs import AppDirs
@@ -105,7 +105,7 @@ def size_fmt(num: float, do_round: bool = False) -> str:
 
 
 def read_package_data(pkg_name: str, _config: Config,
-                      appdirs: AppDirs) -> Union[dict[str, Any], None]:
+                      appdirs: AppDirs) -> dict[str, Any]:
     if pkg_name in _PKG_CACHE:
         return _PKG_CACHE[pkg_name]
 
