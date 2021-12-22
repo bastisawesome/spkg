@@ -1,21 +1,19 @@
-from typing import Any
+from typing import Any, Union
 import json
 import pathlib
 from appdirs import AppDirs
 
 
-def size_fmt(num: float, do_round: bool = False) -> str:
-    for unit in ['B', 'KiB', 'MiB', 'GiB']:
-        if abs(num) < 1024.0:
-            if not do_round:
-                return f'{num:3.2f}{unit}'
-            return f'{round(num)}{unit}'
-        num /= 1024.0
-    if not do_round:
-        return f'{num:.2f}GiB'
-    return f'{round(num)}GiB'
+# ################
+# ####GLOBALS#####
+# ################
+_PKG_CACHE: dict[str, dict[str, Any]] = {}
+_pkg_cache_pos: int = 0
 
 
+# #################
+# #####CLASSES#####
+# #################
 class Config():
     AUTHOR = 'BastIsAwesome'
     APP_NAME = 'spkg'
@@ -85,12 +83,29 @@ class Config():
         return f'FreeBSD:{self.freebsd_version}:{self.architecture}'
 
 
-_PKG_CACHE: dict[str, dict[str, Any]] = {}
-_pkg_cache_pos: int = 0
+# Exceptions
+class PackageNotFoundError(Exception):
+    def __init__(self, package_name: str, *args: tuple[Any]):
+        self.package_name = package_name
+
+
+# ###################
+# #####FUNCTIONS#####
+# ###################
+def size_fmt(num: float, do_round: bool = False) -> str:
+    for unit in ['B', 'KiB', 'MiB', 'GiB']:
+        if abs(num) < 1024.0:
+            if not do_round:
+                return f'{num:3.2f}{unit}'
+            return f'{round(num)}{unit}'
+        num /= 1024.0
+    if not do_round:
+        return f'{num:.2f}GiB'
+    return f'{round(num)}GiB'
 
 
 def read_package_data(pkg_name: str, _config: Config,
-                      appdirs: AppDirs) -> dict[str, Any]:
+                      appdirs: AppDirs) -> Union[dict[str, Any], None]:
     if pkg_name in _PKG_CACHE:
         return _PKG_CACHE[pkg_name]
 
@@ -107,11 +122,11 @@ def read_package_data(pkg_name: str, _config: Config,
 
             if data['name'] == pkg_name:
                 _pkg_cache_pos = f.tell()
-                break
+                return data
 
             line = f.readline()
 
-    return data
+    raise PackageNotFoundError(pkg_name)
 
 
 def proceed_menu(prompt: str) -> bool:
