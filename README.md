@@ -1,3 +1,9 @@
+# Discontinuation
+
+Unfortunately, it would seem FreeBSD has changed permissions on their package repos. As such, I'm shutting down this project. It's not a particularly useful project in general, but I want to keep it up at least as a reference. The code used isn't the highest-quality, but it serves as a baseline for implementing a very simple package downloader, and while I would personally go back and change so much from what I've learned over the years, it's still a baseline.
+
+Given that this project has no real purpose, outside of learning purposes, I just can't be bothered to figure out what needs to change to work with the permission changes in the repos (if anything, I tried HTTP, HTTPS, and FTP). It was a fun project, and I am a little sad I didn't get to finish or get to a state I'm particularly proud of, but I still learned from it and I don't regret trying.
+
 # spkg
 Simple PacKaGe downloader for FreeBSD.
 
